@@ -18,6 +18,12 @@ export default {
 			}
 		},
 		extend: {
+			backgroundImage: {
+				'gradient-dawn': 'var(--gradient-dawn)',
+				'gradient-dusk': 'var(--gradient-dusk)',
+				'gradient-cool': 'var(--gradient-cool)',
+				'gradient-warm': 'var(--gradient-warm)',
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -51,6 +57,11 @@ export default {
 				card: {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
+				},
+				temperature: {
+					warm: 'hsl(var(--temperature-warm))',
+					cool: 'hsl(var(--temperature-cool))',
+					neutral: 'hsl(var(--temperature-neutral))'
 				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
