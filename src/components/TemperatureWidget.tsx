@@ -116,67 +116,71 @@ export function TemperatureWidget() {
   }
 
   return (
-    <div className={`min-h-screen ${temperatureData ? getBackgroundGradient(temperatureData.temperature) : 'bg-gradient-dusk'} flex items-center justify-center p-4 transition-all duration-1000`}>
-      <Card className="w-full max-w-md p-8 text-center bg-card/90 backdrop-blur-sm border-0 shadow-2xl">
-        {/* Connection Status */}
-        <div className="flex items-center justify-center mb-6">
+    <div className={`min-h-screen ${temperatureData ? getBackgroundGradient(temperatureData.temperature) : 'bg-gradient-dusk'} flex flex-col items-center justify-center p-2 transition-all duration-1000`}>
+      {/* Minimal Screen Widget Layout */}
+      <div className="w-full max-w-sm text-center">
+        {/* Connection indicator */}
+        <div className="flex items-center justify-center mb-4">
           {isConnected ? (
-            <Wifi className="w-5 h-5 text-primary mr-2" />
+            <div className="w-2 h-2 bg-primary rounded-full animate-pulse mr-2" />
           ) : (
-            <WifiOff className="w-5 h-5 text-destructive mr-2" />
+            <div className="w-2 h-2 bg-destructive rounded-full mr-2" />
           )}
-          <span className={`text-sm ${isConnected ? 'text-primary' : 'text-destructive'}`}>
-            {isConnected ? 'Connected' : 'Disconnected'}
+          <span className="text-xs opacity-60">
+            {isConnected ? 'LIVE' : 'OFFLINE'}
           </span>
         </div>
 
-        {/* Temperature Display */}
-        <div className="mb-8">
-          <Thermometer className={`w-16 h-16 mx-auto mb-4 ${temperatureData ? getTemperatureColor(temperatureData.temperature) : 'text-muted-foreground'}`} />
+        {/* Main temperature display */}
+        {temperatureData ? (
+          <div className="mb-6">
+            <div className={`text-8xl md:text-9xl font-thin mb-2 ${getTemperatureColor(temperatureData.temperature)} drop-shadow-lg`}>
+              {Math.round(temperatureData.temperature)}°
+            </div>
+            <div className="text-base opacity-70 font-light">
+              OUTDOOR
+            </div>
+          </div>
+        ) : (
+          <div className="mb-6">
+            <div className="text-8xl md:text-9xl font-thin mb-2 text-muted-foreground drop-shadow-lg">
+              --°
+            </div>
+            <div className="text-base opacity-70 font-light">
+              {isLoading ? 'LOADING...' : 'NO DATA'}
+            </div>
+          </div>
+        )}
+
+        {/* Last update time */}
+        {temperatureData && (
+          <div className="text-xs opacity-50 mb-8">
+            Updated {temperatureData.lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </div>
+        )}
+
+        {/* Minimal controls */}
+        <div className="flex items-center justify-center space-x-4">
+          <Button 
+            onClick={fetchTemperature}
+            disabled={isLoading || !config}
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 opacity-60 hover:opacity-100"
+          >
+            <Thermometer className="w-4 h-4" />
+          </Button>
           
-          {temperatureData ? (
-            <>
-              <div className={`text-6xl font-bold mb-2 ${getTemperatureColor(temperatureData.temperature)}`}>
-                {Math.round(temperatureData.temperature)}°
-              </div>
-              <div className="text-lg text-muted-foreground mb-2">
-                {temperatureData.sensorName}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Last updated: {temperatureData.lastUpdated.toLocaleTimeString()}
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="text-6xl font-bold mb-2 text-muted-foreground">--°</div>
-              <div className="text-lg text-muted-foreground">
-                {isLoading ? 'Loading...' : 'No data'}
-              </div>
-            </>
-          )}
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => window.location.href = '/setup'}
+            className="h-8 w-8 p-0 opacity-60 hover:opacity-100"
+          >
+            <Settings className="w-4 h-4" />
+          </Button>
         </div>
-
-        {/* Refresh Button */}
-        <Button 
-          onClick={fetchTemperature}
-          disabled={isLoading || !config}
-          variant="outline"
-          className="w-full"
-        >
-          {isLoading ? 'Refreshing...' : 'Refresh'}
-        </Button>
-
-        {/* Settings Link */}
-        <Button 
-          variant="ghost" 
-          size="sm"
-          onClick={() => window.location.href = '/setup'}
-          className="mt-4 text-muted-foreground"
-        >
-          <Settings className="w-4 h-4 mr-2" />
-          Settings
-        </Button>
-      </Card>
+      </div>
     </div>
   );
 }
